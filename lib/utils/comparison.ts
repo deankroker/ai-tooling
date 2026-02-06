@@ -335,6 +335,18 @@ export const comparisonPresets: ComparisonPreset[] = [
     description: 'Compare Security, Azure, Sales, and Service Copilots',
     productIds: ['security-copilot', 'copilot-azure', 'copilot-sales', 'copilot-service'],
   },
+  {
+    id: 'dev-lite-path',
+    name: 'Dev Lite Path',
+    description: 'Quick start with AI - minimal infrastructure',
+    productIds: ['github-copilot-pro', 'copilot-studio', 'github-models'],
+  },
+  {
+    id: 'dev-heavy-path',
+    name: 'Dev Heavy Path',
+    description: 'Full control over AI stack for enterprise',
+    productIds: ['azure-openai', 'semantic-kernel', 'azure-ai-agent-service', 'azure-ai-search'],
+  },
 ]
 
 // Export comparison as Markdown table

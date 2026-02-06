@@ -38,9 +38,29 @@ export default function ProductColumnHeader({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-text-primary truncate" title={product.name}>
-            {product.name}
-          </h3>
+          {product.documentation ? (
+            <a
+              href={product.documentation}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-text-primary hover:text-accent-blue transition-colors flex items-center gap-1 group"
+              title={product.name}
+            >
+              <span className="truncate">{product.name}</span>
+              <svg
+                className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          ) : (
+            <h3 className="text-sm font-semibold text-text-primary truncate" title={product.name}>
+              {product.name}
+            </h3>
+          )}
           <p className="text-xs text-text-muted truncate" title={product.subcategory}>
             {product.subcategory}
           </p>
@@ -62,12 +82,17 @@ export default function ProductColumnHeader({
         </span>
       </div>
 
-      <div className="mt-2 text-xs">
-        <span className="text-accent-green font-medium">{pricingDisplay}</span>
-        {product.pricingModel.notes && (
-          <span className="text-text-muted block truncate" title={product.pricingModel.notes}>
-            {product.pricingModel.notes}
-          </span>
+      <div className="mt-2 text-xs relative group/pricing">
+        <span className="text-accent-green font-medium cursor-help">{pricingDisplay}</span>
+        {(product.pricingModel.type || product.pricingModel.notes) && (
+          <div className="absolute left-0 top-full mt-1 hidden group-hover/pricing:block z-50 bg-bg-tertiary border border-border rounded-lg p-2 text-xs w-48 shadow-lg">
+            {product.pricingModel.type && (
+              <div className="font-medium text-text-primary">{product.pricingModel.type}</div>
+            )}
+            {product.pricingModel.notes && (
+              <div className="text-text-secondary mt-1">{product.pricingModel.notes}</div>
+            )}
+          </div>
         )}
       </div>
     </div>

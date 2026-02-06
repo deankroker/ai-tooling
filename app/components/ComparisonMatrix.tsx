@@ -18,7 +18,54 @@ interface ComparisonMatrixProps {
   visibleCategories: RowCategory[]
   showDifferencesOnly: boolean
   highlightDifferences: boolean
+  onSelectProducts?: (ids: string[]) => void
 }
+
+interface SuggestionCard {
+  id: string
+  icon: string
+  title: string
+  description: string
+  productIds: string[]
+}
+
+const suggestionCards: SuggestionCard[] = [
+  {
+    id: 'agent-platforms',
+    icon: '🤖',
+    title: 'Agent Platforms',
+    description: 'Which agent platform should I use?',
+    productIds: ['azure-ai-agent-service', 'copilot-studio', 'microsoft-agent-framework'],
+  },
+  {
+    id: 'preview-features',
+    icon: '🔬',
+    title: 'Preview Features',
+    description: "What's coming in preview?",
+    productIds: ['microsoft-foundry-portal', 'github-copilot-coding-agent', 'azure-sre-agent'],
+  },
+  {
+    id: 'dev-lite',
+    icon: '💻',
+    title: 'Dev Lite Path',
+    description: 'Quick start with AI - minimal infra',
+    productIds: ['github-copilot-pro', 'copilot-studio', 'github-models'],
+  },
+  {
+    id: 'dev-heavy',
+    icon: '🏗️',
+    title: 'Dev Heavy Path',
+    description: 'Full control over AI stack',
+    productIds: ['azure-openai', 'semantic-kernel', 'azure-ai-agent-service', 'azure-ai-search'],
+  },
+  {
+    id: 'github-vs-azure',
+    icon: '⚔️',
+    title: 'GitHub vs Azure',
+    description: 'GitHub developer vs Azure developer?',
+    productIds: ['github-copilot-pro', 'github-models', 'azure-openai', 'azure-ai-agent-service'],
+  },
+]
 
 const categoryOrder: RowCategory[] = [
   'status',
@@ -36,6 +83,7 @@ export default function ComparisonMatrix({
   visibleCategories,
   showDifferencesOnly,
   highlightDifferences,
+  onSelectProducts,
 }: ComparisonMatrixProps) {
   const matrix = useMemo(() => buildComparisonMatrix(productIds), [productIds])
 
@@ -74,18 +122,47 @@ export default function ComparisonMatrix({
 
   if (products.length === 0) {
     return (
-      <div className="bg-bg-secondary border border-border rounded-lg p-12 text-center">
-        <div className="text-text-muted mb-4">
-          <svg className="w-16 h-16 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-          </svg>
+      <div className="bg-bg-secondary border border-border rounded-lg p-8">
+        <div className="text-center mb-6">
+          <div className="text-text-muted mb-2">
+            <svg className="w-10 h-10 mx-auto opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-text-primary">
+            Start Comparing
+          </h3>
+          <p className="text-sm text-text-secondary mt-1">
+            Search above or click a suggestion to get started
+          </p>
         </div>
-        <h3 className="text-lg font-medium text-text-primary mb-2">
-          No products selected
-        </h3>
-        <p className="text-text-secondary">
-          Use the search above to add products to compare, or select a preset comparison.
-        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {suggestionCards.map((card) => (
+            <button
+              key={card.id}
+              onClick={() => onSelectProducts?.(card.productIds)}
+              className="text-left p-4 bg-bg-tertiary border border-border rounded-lg hover:border-accent-blue hover:bg-bg-tertiary/80 transition-all cursor-pointer group"
+            >
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">{card.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="font-medium text-text-primary group-hover:text-accent-blue transition-colors">
+                      {card.title}
+                    </h4>
+                    <span className="text-xs bg-bg-secondary text-text-muted px-2 py-0.5 rounded-full shrink-0">
+                      {card.productIds.length} products
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-secondary mt-1">
+                    {card.description}
+                  </p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     )
   }

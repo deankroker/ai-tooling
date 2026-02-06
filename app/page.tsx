@@ -164,6 +164,7 @@ export default function Home() {
               visibleCategories={visibleCategories}
               showDifferencesOnly={showDifferencesOnly}
               highlightDifferences={highlightDifferences}
+              onSelectProducts={setSelectedProductIds}
             />
           </section>
         </div>
