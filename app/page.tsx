@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { allProducts, getCategoryCounts, keyDates } from '@/lib/data/microsoft-ai-catalog'
 import { RowCategory, exportToMarkdown } from '@/lib/utils/comparison'
 import ProductSelector from './components/ProductSelector'
 import ComparisonMatrix from './components/ComparisonMatrix'
 import FilterControls from './components/FilterControls'
+import JourneyWizard from './components/JourneyWizard'
 
 const defaultCategories: RowCategory[] = [
   'status',
@@ -21,6 +22,12 @@ export default function Home() {
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false)
   const [highlightDifferences, setHighlightDifferences] = useState(false)
   const [showTimeline, setShowTimeline] = useState(false)
+  const [showWizard, setShowWizard] = useState(true)
+
+  // Memoize the handler to prevent unnecessary re-renders
+  const handleSelectProducts = useCallback((ids: string[]) => {
+    setSelectedProductIds(ids)
+  }, [])
 
   // Load from URL on mount
   useEffect(() => {
@@ -32,6 +39,7 @@ export default function Home() {
       )
       if (ids.length > 0) {
         setSelectedProductIds(ids)
+        setShowWizard(false) // Skip wizard if products in URL
       }
     }
   }, [])
@@ -156,16 +164,24 @@ export default function Home() {
             )}
           </aside>
 
-          {/* Main Content - Comparison Matrix */}
+          {/* Main Content - Wizard or Comparison Matrix */}
           <section>
-            <ComparisonMatrix
-              productIds={selectedProductIds}
-              onRemoveProduct={handleRemoveProduct}
-              visibleCategories={visibleCategories}
-              showDifferencesOnly={showDifferencesOnly}
-              highlightDifferences={highlightDifferences}
-              onSelectProducts={setSelectedProductIds}
-            />
+            {showWizard && selectedProductIds.length === 0 ? (
+              <JourneyWizard
+                onSelectProducts={handleSelectProducts}
+                onSkip={() => setShowWizard(false)}
+                selectedProductIds={selectedProductIds}
+              />
+            ) : (
+              <ComparisonMatrix
+                productIds={selectedProductIds}
+                onRemoveProduct={handleRemoveProduct}
+                visibleCategories={visibleCategories}
+                showDifferencesOnly={showDifferencesOnly}
+                highlightDifferences={highlightDifferences}
+                onSelectProducts={handleSelectProducts}
+              />
+            )}
           </section>
         </div>
 
